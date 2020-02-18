@@ -1,0 +1,1 @@
+A working example of spring boot REST API providing conversion services (initial temperature only) with JS frontend clients (initial vue + bootstrap only)
