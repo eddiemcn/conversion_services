@@ -132,11 +132,6 @@ export default {
         })
     }
   },
-  /*
-  filters () {
-    savePreviousScale
-  },
-  */
   mounted () {
     // initialise the display
     this.init()

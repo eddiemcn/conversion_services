@@ -13,11 +13,13 @@
 
 <script>
 // @ is an alias to /src
+import lengthConvertor from '@/components/LengthConvertor.vue'
 import tempConvertor from '@/components/TempConvertor.vue'
 
 export default {
   name: 'home',
   components: {
+    lengthConvertor,
     tempConvertor
   },
   data () {
@@ -25,7 +27,7 @@ export default {
       selected: 'temp',
       options: [
         { value: 'temp', text: 'Temperature' },
-        { value: 'len', text: 'Length' }
+        { value: 'length', text: 'Length' }
       ],
       result: '',
       valueToConvert: '',

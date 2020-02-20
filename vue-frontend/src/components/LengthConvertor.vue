@@ -3,25 +3,34 @@
     <b-container>
       <b-row>
         <b-col cols="5">
-          <b-form-input v-model="scale1Value" step=".01" @change="value1Changed"></b-form-input>
+          <b-form-input id="value1" v-model="value1" step=".01" @input.native="valueChanged"></b-form-input>
         </b-col>
         <b-col cols="2">=</b-col>
         <b-col cols="5">
-          <b-form-input v-model="scale2Value" step=".01" @change="value2Changed"></b-form-input>
+          <b-form-input id="value2" v-model="value2" step=".01" @input.native="valueChanged"></b-form-input>
         </b-col>
       </b-row>
       <b-row>
           <b-col cols="5">
             <div class="select-scale">
-              <b-form-select v-model="scale1" :options="scale_options" @change="scale1Changed"></b-form-select>
+              <b-form-select id="scale1" v-model="scale1" :options="scale_options" @input.native="scaleChanged"></b-form-select>
             </div>
           </b-col>
           <b-col cols="2"></b-col>
           <b-col cols="5">
             <div class="select-scale">
-              <b-form-select v-model="scale2" :options="scale_options" @change="scale2Changed"></b-form-select>
+              <b-form-select id="scale2" v-model="scale2" :options="scale_options" @input.native="scaleChanged"></b-form-select>
             </div>
           </b-col>
+      </b-row>
+      <b-row class="pt-4">
+        <b-col cols="1"></b-col>
+        <b-col cols="2" class="formula">
+          <p class="">Formula</p>
+        </b-col>
+        <b-col cols="9">
+          <p v-html="formula" class="text-left"></p>
+        </b-col>
       </b-row>
     </b-container>
   </div>
@@ -29,62 +38,112 @@
 
 <script>
 export default {
-  name: 'temp-convertor',
+  name: 'length-convertor',
   data () {
     return {
-      scale1: 'C',
-      scale2: 'F',
+      scale1: 'm',
+      scale2: 'cm',
       scale_options: [
-        { value: 'C', text: 'Celsius' },
-        { value: 'F', text: 'Fahrenheit' },
-        { value: 'K', text: 'Kelvin' }
+        { value: 'nm', text: 'Nanometre' },
+        { value: 'um', text: 'Micrometre' },
+        { value: 'mm', text: 'Millimetre' },
+        { value: 'cm', text: 'Centimetre' },
+        { value: 'm', text: 'Metre' },
+        { value: 'km', text: 'Kilometre' },
+        { value: 'in', text: 'Inch' },
+        { value: 'ft', text: 'Foot' },
+        { value: 'yd', text: 'Yard' },
+        { value: 'M', text: 'Mile' },
+        { value: 'NM', text: 'Nautical Nile' }
       ],
-      scale1Value: '0',
-      scale2Value: '32',
-      rootURL: 'http://localhost:8080/'
+      value1: '1',
+      value2: '100',
+      formula: '100 X 1 metre = 100 Centimetres',
+      rootURL: 'http://localhost:8080/api/length/'
     }
   },
   methods: {
-    convert: function (fromScale, toScale, value, deflt) {
-      console.log('convert fromScale, toScale, value=' + fromScale + ', ' + toScale + ', ' + value)
-      var urlEnd
-      if (fromScale === toScale) {
-        return deflt
-      }
+    convert: function (fromScale, toScale, valueToConvert) {
+      console.log('convert fromScale, toScale, value=' + fromScale + ', ' + toScale + ', ' + valueToConvert)
 
-      if (fromScale === 'C' && toScale === 'F') {
-        urlEnd = 'toF/'
-      } else if (fromScale === 'F' && toScale === 'C') {
-        urlEnd = 'toC/'
-      }
-
-      var targetURL = this.rootURL + urlEnd + value
+      var targetURL = this.rootURL + fromScale + '/' + toScale + '/' + valueToConvert
       console.log('Target is ' + targetURL)
-      fetch(targetURL)
-        .then(response => {
-          return response.text()
-        }) 
-    },
-    scale1Changed: function (arg) {
-      console.log('Scale1Changed arg=' + arg)
-      console.log('scale1Value =' + this.scale1Value)
-      console.log('scale2Value =' + this.scale2Value)
 
-      this.scale2Value = this.convert(this.scale1, this.scale2, this.scale1Value, this.scale2Value)
+      return new Promise(function (resolve, reject) {
+        fetch(targetURL)
+          .then(response => response.json()
+          )
+          .then(data => {
+            resolve({ success: true, data: data })
+          })
+      })
     },
-    scale2Changed: function (arg) {
-      console.log('Scale1Changed arg=' + arg)
-      console.log('scale1Value =' + this.scale1Value)
-      console.log('scale2Value =' + this.scale2Value)
+    scaleChanged: function (event) {
+      console.log('value1 =' + this.value1)
+      console.log('value2 =' + this.value2)
 
-      this.scale1Value = this.convert(this.scale2, this.scale1, this.scale2Value, this.scale1Value)
+      if (event) {
+        var inputScale
+        var outputScale
+        if (event.target.id === 'scale1') {
+          if (event.target.value === this.scale2) {
+            console.log('setting scale2 to ' + this.scale1)
+            this.scale2 = this.scale1
+          }
+
+          inputScale = event.target.value
+          outputScale = this.scale2
+        } else {
+          if (event.target.value === this.scale1) {
+            console.log('setting scale1 to ' + this.scale2)
+            this.scale1 = this.scale2
+          }
+
+          inputScale = this.scale1
+          outputScale = event.target.value
+        }
+
+        this.convert(inputScale, outputScale, this.value1)
+          .then(result => {
+            if (result.success) {
+              console.log(result)
+              this.value2 = result.data.value
+              this.formula = result.data.formula
+            }
+          })
+      }
     },
-    value1Changed: function (arg) {
-      this.scale1Changed(arg)
+    valueChanged: function (event) {
+      if (event) {
+        if (event.target.id === 'value1') {
+          this.convert(this.scale1, this.scale2, this.value1)
+            .then(result => {
+              console.log(result)
+              this.value2 = result.data.value
+              this.formula = result.data.formula
+            })
+        } else {
+          this.convert(this.scale1, this.scale2, this.value2)
+            .then(result => {
+              console.log(result)
+              this.value1 = result.data.value
+              this.formula = result.data.formula
+            })
+        }
+      }
     },
-    value2Changed: function (arg) {
-      this.scale2Changed(arg)
+    init: function () {
+      this.convert(this.scale1, this.scale2, this.value1)
+        .then(result => {
+          console.log(result)
+          this.value2 = result.data.value
+          this.formula = result.data.formula
+        })
     }
+  },
+  mounted () {
+    // initialise the display
+    this.init()
   }
 }
-  </script>
+</script>
