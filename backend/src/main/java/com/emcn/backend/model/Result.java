@@ -1,4 +1,4 @@
-package com.demo.backend.model;
+package com.emcn.backend.model;
 
 public class Result {
   private final String value;

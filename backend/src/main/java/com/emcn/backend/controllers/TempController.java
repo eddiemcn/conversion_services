@@ -1,4 +1,4 @@
-package com.demo.backend.controllers;
+package com.emcn.backend.controllers;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.demo.backend.util.NumberUtils;
-import com.demo.backend.model.Result;
+import com.emcn.backend.util.NumberUtils;
+import com.emcn.backend.model.Result;
 
 @RestController
 @CrossOrigin
@@ -30,7 +30,7 @@ public class TempController {
   }
 
   @RequestMapping(value="/{fromScale}/{toScale}/{valueToConvert}", method=RequestMethod.GET)
-  public Result getCentigrade(
+  public Result convert(
     @PathVariable("fromScale") String fromScale,
     @PathVariable("toScale") String toScale,
     @PathVariable("valueToConvert") String valueToConvert
@@ -44,7 +44,7 @@ public class TempController {
 
     boolean success = true;
     // calculate formula result and format formula string with input and result
-    String conversion = fromScale + toScale.toUpperCase();
+    String conversion = (fromScale + toScale).toUpperCase();
     switch (conversion) {
       case "CF":
         output = nu.floatToString((f * 9.0f / 5.0f) + 32.0f);

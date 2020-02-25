@@ -1,0 +1,39 @@
+convert (fromScale, toScale, input) {
+    calls web service with (fromScale, toScale, input)
+    returns result
+}
+valueChanged(event) {
+    if (event === value1) {
+        convert(scale1, scale2, value1)
+        .then () {
+            value2 = result
+        }
+    } else {
+        convert(scale2, scale1, value2)
+        .then () {
+            value1 = result
+       }
+    }
+}
+scaleChanged(event) {
+    if (event === scale1) {
+        if (scale1.scale === scale2.scale) {
+            scale2.scale = scale1.previous
+        }
+    } else {
+        if (scale2.scale === scale1.scale) {
+            scale1.scale = scale2.previous
+        }
+    }
+    convert(scale1, scale2, value1, value2)
+    .then () {
+        value2 = result;
+    }
+}
+init() {
+    convert(scale1, scale2, val)
+    .then () {
+        value2 = result
+    }
+    
+}

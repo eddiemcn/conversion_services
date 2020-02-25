@@ -41,20 +41,17 @@ export default {
   name: 'length-convertor',
   data () {
     return {
-      scale1: 'm',
+      scale1: 'mt',
       scale2: 'cm',
       scale_options: [
-        { value: 'nm', text: 'Nanometre' },
-        { value: 'um', text: 'Micrometre' },
         { value: 'mm', text: 'Millimetre' },
         { value: 'cm', text: 'Centimetre' },
-        { value: 'm', text: 'Metre' },
+        { value: 'mt', text: 'Metre' },
         { value: 'km', text: 'Kilometre' },
         { value: 'in', text: 'Inch' },
         { value: 'ft', text: 'Foot' },
         { value: 'yd', text: 'Yard' },
-        { value: 'M', text: 'Mile' },
-        { value: 'NM', text: 'Nautical Nile' }
+        { value: 'M', text: 'Mile' }
       ],
       value1: '1',
       value2: '100',
