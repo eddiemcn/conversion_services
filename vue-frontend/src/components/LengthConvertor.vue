@@ -56,7 +56,7 @@ export default {
       value1: '1',
       value2: '100',
       formula: '100 X 1 metre = 100 Centimetres',
-      rootURL: 'http://localhost:8080/api/length/'
+      rootURL: 'NOT SET'
     }
   },
   methods: {
@@ -130,6 +130,9 @@ export default {
       }
     },
     init: function () {
+      this.rootURL = process.env.VUE_APP_APIURL + 'length/'
+      console.log('URL: ' + this.rootURL)
+
       this.convert(this.scale1, this.scale2, this.value1)
         .then(result => {
           console.log(result)

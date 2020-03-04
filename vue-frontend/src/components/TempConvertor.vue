@@ -50,7 +50,7 @@ export default {
       value1: '0',
       value2: '32',
       formula: '',
-      rootURL: 'http://localhost:8080/api/temp/'
+      rootURL: 'NOT SET'
     }
   },
   methods: {
@@ -124,6 +124,9 @@ export default {
       }
     },
     init: function () {
+      this.rootURL = process.env.VUE_APP_APIURL + 'temp/'
+      console.log('URL: ' + this.rootURL)
+
       this.convert(this.scale1, this.scale2, this.value1)
         .then(result => {
           console.log(result)
